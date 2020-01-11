@@ -165,9 +165,11 @@ function makeOnInput() {
 	let state = states.EMPTY;
 	let position = 0; // TODO: Use when implementing in the middle of text rather than the end
 
-	function handleEmpty(input) {
+	function handleEmpty(e) {
 		// Reset data
-		inputHistory = []
+		inputHistory = [];
+
+		let input = e.data;
 
 		if (input in CONSONANTS) {
 			state = states.INITIAL;
@@ -190,7 +192,7 @@ function makeOnInput() {
 					// Nothing special to do here
 					return;
 				}
-				handleEmpty(input);
+				handleEmpty(e);
 				break;
 			case states.INITIAL:
 				if (e.inputType === 'deleteContentBackward') {
@@ -206,7 +208,7 @@ function makeOnInput() {
 				}
 				else {
 					state = states.EMPTY;
-					handleEmpty(input);
+					handleEmpty(e);
 				}
 				break;
 			case states.MEDIAL1:
@@ -222,7 +224,7 @@ function makeOnInput() {
 				}
 				else {
 					state = states.EMPTY;
-					handleEmpty(input);
+					handleEmpty(e);
 				}
 				break;
 			case states.MEDIAL2:
@@ -235,7 +237,7 @@ function makeOnInput() {
 				}
 				else {
 					state = states.EMPTY;
-					handleEmpty(input);
+					handleEmpty(e);
 				}
 				break;
 			case states.FINAL1:
@@ -257,7 +259,7 @@ function makeOnInput() {
 				}
 				else {
 					state = states.EMPTY;
-					handleEmpty(input);
+					handleEmpty(e);
 				}
 				break;
 			case states.FINAL2:
@@ -267,7 +269,7 @@ function makeOnInput() {
 				}
 				else {
 					state = states.EMPTY;
-					handleEmpty(input);
+					handleEmpty(e);
 				}
 				break;
 			case states.SINGLE1:
@@ -281,7 +283,7 @@ function makeOnInput() {
 				}
 				else {
 					state = states.EMPTY
-					handleEmpty(input);
+					handleEmpty(e);
 				}
 				break;
 			case states.SINGLE2:
@@ -291,7 +293,7 @@ function makeOnInput() {
 				}
 				else {
 					state = states.EMPTY;
-					handleEmpty(input);
+					handleEmpty(e);
 				}
 				break;
 		}
@@ -311,7 +313,11 @@ function makeOnInput() {
 		}
 
 		// Replace last 2 positions of text (current syllable-in-the-making + English input)
+		// 한구 => 한구r => 한국
 		target.value = target.value.substring(0, target.value.length - 2) + convertedText;
+
+		// Highlight current syllable-in-the-making
+		// target.setSelectionRange(target.value.length - 1, target.value.length);
 	};
 }
 
