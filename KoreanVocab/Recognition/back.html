@@ -1,0 +1,36 @@
+<div class="drop-shadow">
+  <!-- FrontSide will be double-wrapped in the drop-shadow div but better than copy-paste -->
+
+  {{FrontSide}}
+
+  <div class="backbg">
+    <div id="info-box">
+
+      {{#Hanja}}
+      <div class="section">
+        <h2>Hanja</h2>
+        {{Hanja}}
+      </div>
+      {{/Hanja}}
+
+      <div class="section">
+        <h2>Defintion</h2>
+        {{English}}
+      </div>
+
+      {{#Mnemonic}}
+      <div class="section">
+        <h2>Mnemonic</h2>
+        {{Mnemonic}}
+      </div>
+      {{/Mnemonic}}
+
+    </div> <!-- info box -->
+  </div> <!-- backbg -->
+</div> <!-- drop shadow -->
+
+<!-- Used with _wk_modify_input.js to hide default diff from showing -->
+<div id="correctAnswer" style="display:none">{{English}}</div>
+
+<!-- SCRIPTS -->
+<script src="_wk_modify_input.js"></script>

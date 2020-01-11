@@ -1,0 +1,92 @@
+.card {
+    font-family: Arial;
+    font-size: 24px;
+    text-align: center;
+    color: black;
+    background: #f3f3f3;
+  }
+  
+  .drop-shadow {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 3px 3px 0 #e1e1e1;
+    border-radius: 7px 7px 10px 10px;
+  }
+  
+  .frontbg {
+    font-size: 3.5em;
+    color: #fff;
+    text-shadow: 3px 3px 0 #0093dd;
+    background-color: #1cb0f6;
+    border-radius: 7px 7px 0 0;
+    padding: 0.5em;
+  }
+  
+  center {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input#typeans {
+    width: unset; /* Override Anki's default styling of #typeans { width: 100%; } */
+    text-align: center;
+    font-size: 25px;
+    color: #4b4b4b;
+    padding: 15px;
+    border: none;
+  }
+  
+  input#typeans:focus {
+    outline: none; /* Get rid of blue highlight box when typing */
+  }
+  
+  .backbg {
+    background-color: #fff;
+    padding: 15px 30px;
+    color: #555;
+    font-size: 28px;
+    text-align: left;
+  }
+  
+  input#typeans, .backbg {
+    border-radius: 0px 0px 10px 10px; 
+  }
+  
+  .corrected {
+    font-family: Arial;
+    text-align: center;
+    font-size: 25px;
+    padding: 15px;
+  }
+  
+  #incorrect { 
+    background: #ffc1c1;
+    color: #ea2b2b;
+  }
+  
+  #correct {
+    background: #b8f28b;
+    color: #58a700;
+  }
+  
+  #info-box {
+    font-size: 16px;
+    line-height: 1.5em;
+    text-align: left;
+    padding: 0.5em;
+  }
+  
+  #info-box .section {
+    margin-bottom: 2.5em;
+  }
+  
+  #info-box h2 {
+      margin: 0 0 0.5em;
+      padding-bottom: 0.5em;
+      color: #888888;
+      font-size: 18px;
+      font-weight: normal;
+      letter-spacing: -1px;
+      line-height: 1em;
+      border-bottom: 1px solid #eee;
+  }
