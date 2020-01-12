@@ -164,12 +164,25 @@ function makeOnInput() {
 	let inputHistory = [];
 	let state = states.EMPTY;
 	let position = 0; // TODO: Use when implementing in the middle of text rather than the end
+	let currSyllable = '';
+
+	function resetData() {
+		inputHistory = [];
+		currSyllable = '';
+	}
 
 	function handleEmpty(e) {
-		// Reset data
-		inputHistory = [];
-
 		let input = e.data;
+		let target = e.target;
+
+		// If adding characters, previous syllable (used to be the current syllable) is erased by the current input
+		// and replaced with the new input. Add back in the previous syllable before the new input,
+		// then process the new input normally.
+		if (e.inputType === 'insertText') {
+			target.value = target.value.substring(0, target.value.length - 1) + currSyllable + input;
+		}
+
+		resetData();
 
 		if (input in CONSONANTS) {
 			state = states.INITIAL;
@@ -186,6 +199,9 @@ function makeOnInput() {
 		let prevInput = inputHistory[inputHistory.length - 1];
 		let inputCombinesWithPrev = QWERTY_TRIE[prevInput] ? input in QWERTY_TRIE[prevInput] : false;
 
+		console.log("Received InpuEvent");
+		console.log(e.target.value, currSyllable);
+
 		switch (state) {
 			case states.EMPTY:
 				if (e.inputType === 'deleteContentBackward') {
@@ -196,7 +212,7 @@ function makeOnInput() {
 				break;
 			case states.INITIAL:
 				if (e.inputType === 'deleteContentBackward') {
-					// Next input will clear input history since state is now EMPTY
+					resetData();
 					state = states.EMPTY;
 					return;
 				}
@@ -274,7 +290,7 @@ function makeOnInput() {
 				break;
 			case states.SINGLE1:
 				if (e.inputType === 'deleteContentBackward') {
-					// Next input will clear input history since state is now EMPTY
+					resetData();
 					state = states.EMPTY;
 					return;
 				}
@@ -303,21 +319,32 @@ function makeOnInput() {
 			inputHistory.push(input)
 		}
 
-		let convertedText;
 		if (VALID_SYLLABLE_STATES.includes(state)) {
-			convertedText = getPrecomposedSyllable(inputHistory)
+			currSyllable = getPrecomposedSyllable(inputHistory)
 		}
 		else { // Single character or compound vowel/consonant
 			let secondInput = inputHistory[1] ? inputHistory[1] : '';
-			convertedText = QWERTY_TRIE[inputHistory[0]][secondInput];
+			currSyllable = QWERTY_TRIE[inputHistory[0]][secondInput];
 		}
+
+		console.log(e.target.value, currSyllable);
 
 		// Replace last 2 positions of text (current syllable-in-the-making + English input)
 		// 한구 => 한구r => 한국
-		target.value = target.value.substring(0, target.value.length - 2) + convertedText;
+		if (e.inputType === 'insertText') {
+			target.value = target.value.substring(0, target.value.length - 1) + currSyllable;
+		}
+		else if (e.inputType === 'deleteContentBackward') {
+			target.value += currSyllable;
+		}
+		else {
+			console.error("Don't know how to handle " + e.inputType);
+		}
 
 		// Highlight current syllable-in-the-making
-		// target.setSelectionRange(target.value.length - 1, target.value.length);
+		target.setSelectionRange(target.value.length - 1, target.value.length);
+
+		console.log(e.target.value, currSyllable);
 	};
 }
 
