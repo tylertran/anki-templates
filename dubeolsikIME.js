@@ -207,17 +207,18 @@ function makeOnInput() {
 
 		let prevInput = inputHistory[inputHistory.length - 1];
 		let inputCombinesWithPrev = QWERTY_TRIE[prevInput] ? input in QWERTY_TRIE[prevInput] : false;
+		let deleting = (e.inputType === 'deleteContentBackward');
 
 		switch (state) {
 			case states.EMPTY:
-				if (e.inputType === 'deleteContentBackward') {
+				if (deleting) {
 					// Nothing special to do here
 					return;
 				}
 				handleEmpty(e);
 				break;
 			case states.INITIAL:
-				if (e.inputType === 'deleteContentBackward') {
+				if (deleting) {
 					resetData();
 					state = states.EMPTY;
 					return;
@@ -234,7 +235,7 @@ function makeOnInput() {
 				}
 				break;
 			case states.MEDIAL1:
-				if (e.inputType === 'deleteContentBackward') {
+				if (deleting) {
 					inputHistory.pop();
 					state = states.INITIAL;
 				}
@@ -250,7 +251,7 @@ function makeOnInput() {
 				}
 				break;
 			case states.MEDIAL2:
-				if (e.inputType === 'deleteContentBackward') {
+				if (deleting) {
 					inputHistory.pop();
 					state = states.MEDIAL1;
 				}
@@ -263,7 +264,7 @@ function makeOnInput() {
 				}
 				break;
 			case states.FINAL1:
-				if (e.inputType === 'deleteContentBackward') {
+				if (deleting) {
 					inputHistory.pop();
 					// Use length of input history to determine whether the medial vowel is a compound vowel or not
 					if (inputHistory.length == 2) {
@@ -285,7 +286,7 @@ function makeOnInput() {
 				}
 				break;
 			case states.FINAL2:
-				if (e.inputType === 'deleteContentBackward') {
+				if (deleting) {
 					inputHistory.pop();
 					state = states.FINAL1;
 				}
@@ -295,7 +296,7 @@ function makeOnInput() {
 				}
 				break;
 			case states.SINGLE1:
-				if (e.inputType === 'deleteContentBackward') {
+				if (deleting) {
 					resetData();
 					state = states.EMPTY;
 					return;
@@ -309,7 +310,7 @@ function makeOnInput() {
 				}
 				break;
 			case states.SINGLE2:
-				if (e.inputType === 'deleteContentBackward') {
+				if (deleting) {
 					inputHistory.pop();
 					state = states.SINGLE1;
 				}
@@ -338,7 +339,7 @@ function makeOnInput() {
 		if (e.inputType === 'insertText') {
 			target.value = target.value.substring(0, target.value.length - 1) + currSyllable;
 		}
-		else if (e.inputType === 'deleteContentBackward') {
+		else if (deleting) {
 			target.value += currSyllable;
 		}
 		else {
