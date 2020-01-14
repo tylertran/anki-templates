@@ -167,8 +167,17 @@ function makeOnInput() {
 	let currSyllable = '';
 
 	function resetData() {
+		console.log("resetting");
+		state = states.EMPTY;
 		inputHistory = [];
 		currSyllable = '';
+	}
+
+	function resetDataOnKeypress(e) {
+		console.log(e.code);
+		if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') {
+			resetData();
+		}
 	}
 
 	function handleEmpty(e) {
@@ -192,15 +201,12 @@ function makeOnInput() {
 		}
 	}
 
-	return function onInput(e) {
+	function onInput(e) {
 		let input = e.data;
 		let target = e.target;
 
 		let prevInput = inputHistory[inputHistory.length - 1];
 		let inputCombinesWithPrev = QWERTY_TRIE[prevInput] ? input in QWERTY_TRIE[prevInput] : false;
-
-		console.log("Received InpuEvent");
-		console.log(e.target.value, currSyllable);
 
 		switch (state) {
 			case states.EMPTY:
@@ -327,8 +333,6 @@ function makeOnInput() {
 			currSyllable = QWERTY_TRIE[inputHistory[0]][secondInput];
 		}
 
-		console.log(e.target.value, currSyllable);
-
 		// Replace last 2 positions of text (current syllable-in-the-making + English input)
 		// 한구 => 한구r => 한국
 		if (e.inputType === 'insertText') {
@@ -343,9 +347,9 @@ function makeOnInput() {
 
 		// Highlight current syllable-in-the-making
 		target.setSelectionRange(target.value.length - 1, target.value.length);
-
-		console.log(e.target.value, currSyllable);
 	};
+
+	return { resetData, resetDataOnKeypress, onInput };
 }
 
 /**
@@ -398,13 +402,15 @@ function bind(element = {}) {
 			+ JSON.stringify(element)
 		);
 	}
-	const onInput = makeOnInput();
+	const { resetData, resetDataOnKeypress, onInput } = makeOnInput();
 	element.setAttribute('lang', 'ko');
 	element.setAttribute('autoCapitalize', 'none');
 	element.setAttribute('autoCorrect', 'off');
 	element.setAttribute('autoComplete', 'off');
 	element.setAttribute('spellCheck', 'false');
 	element.addEventListener('input', onInput);
+	element.addEventListener('click', resetData);
+	element.addEventListener('keydown', resetDataOnKeypress);
 }
 
 
