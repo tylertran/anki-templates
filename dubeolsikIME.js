@@ -1,3 +1,20 @@
+// Unicode ranges
+const HANGUL_SYLLABLES = [0xAC00, 0xD7A3];
+const HANGUL_JAMO = [0x1100, 0x11FF];
+const HANGUL_COMPATABILITY_JAMO = [0x3130, 0x318F];
+const HANGUL_JAMO_EXTENDED_A = [0xA960, 0xA97F];
+const HANGUL_JAMO_EXTENDED_B = [0xD7B0, 0xD7FF];
+
+const KOREAN_RANGES = [
+	HANGUL_SYLLABLES,
+	HANGUL_JAMO,
+	HANGUL_COMPATABILITY_JAMO,
+	HANGUL_JAMO_EXTENDED_A,
+	HANGUL_JAMO_EXTENDED_B
+];
+
+const ENGLISH_LETTERS = /^[A-Za-z]*$/;
+
 const JAMO_VALUES = {
 	initial: {
 		'ㄱ': 0,
@@ -167,15 +184,19 @@ function makeOnInput() {
 	let currSyllable = '';
 
 	function resetData() {
-		console.log("resetting");
 		state = states.EMPTY;
 		inputHistory = [];
 		currSyllable = '';
 	}
 
+	function resetDataOnClick(e) {
+		position = e.target.selectionEnd;
+		resetData();
+	}
+
 	function resetDataOnKeypress(e) {
-		console.log(e.code);
 		if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') {
+			position = e.target.selectionEnd;
 			resetData();
 		}
 	}
@@ -184,11 +205,14 @@ function makeOnInput() {
 		let input = e.data;
 		let target = e.target;
 
+		let chars = target.value.split('');
+		position = chars.findIndex(c => !isCharKorean(c));
+
 		// If adding characters, previous syllable (used to be the current syllable) is erased by the current input
 		// and replaced with the new input. Add back in the previous syllable before the new input,
 		// then process the new input normally.
 		if (e.inputType === 'insertText') {
-			target.value = target.value.substring(0, target.value.length - 1) + currSyllable + input;
+			target.value = target.value.substring(0, position) + currSyllable + input + target.value.substring(position + 1);
 		}
 
 		resetData();
@@ -203,6 +227,12 @@ function makeOnInput() {
 
 	function onInput(e) {
 		let input = e.data;
+
+		if ((!ENGLISH_LETTERS.test(input) && input !== null) || e.inputType === 'deleteContentForward') {
+			// Only try to perform conversions on English letters
+			return;
+		}
+		
 		let target = e.target;
 
 		let prevInput = inputHistory[inputHistory.length - 1];
@@ -337,20 +367,24 @@ function makeOnInput() {
 		// Replace last 2 positions of text (current syllable-in-the-making + English input)
 		// 한구 => 한구r => 한국
 		if (e.inputType === 'insertText') {
-			target.value = target.value.substring(0, target.value.length - 1) + currSyllable;
+			// Split input into hangul + English + hangul
+			let chars = target.value.split('');
+			position = chars.findIndex(c => !isCharKorean(c));
+			target.value = target.value.substring(0, position) + currSyllable + target.value.substring(position + 1);
 		}
 		else if (deleting) {
-			target.value += currSyllable;
+			console.log(position, target.value, currSyllable);
+			target.value = target.value.substring(0, position) + currSyllable + target.value.substring(position);
 		}
 		else {
 			console.error("Don't know how to handle " + e.inputType);
 		}
 
 		// Highlight current syllable-in-the-making
-		target.setSelectionRange(target.value.length - 1, target.value.length);
+		target.setSelectionRange(position, position + 1);
 	};
 
-	return { resetData, resetDataOnKeypress, onInput };
+	return { resetDataOnClick, resetDataOnKeypress, onInput };
 }
 
 /**
@@ -394,6 +428,30 @@ function getPrecomposedSyllable(inputHistory) {
 	return String.fromCharCode(unicodeVal);
 }
 
+/**
+ * https://github.com/WaniKani/WanaKana/blob/master/src/utils/isCharInRange.js
+ * Takes a character and a unicode range. Returns true if the char is in the range.
+ * @param  {String}  char  unicode character
+ * @param  {Number}  start unicode start range
+ * @param  {Number}  end   unicode end range
+ * @return {Boolean}
+ */
+function isCharInRange(char = '', start, end) {
+	if (char === '' || char === null) return false;
+	const code = char.charCodeAt(0);
+	return start <= code && code <= end;
+  }
+
+/**
+ * https://github.com/WaniKani/WanaKana/blob/master/src/utils/isCharJapanese.js
+ * Tests a character. Returns true if the character is Korean.
+ * @param  {String} char character string to test
+ * @return {Boolean}
+ */
+function isCharKorean(char = '') {
+	return KOREAN_RANGES.some(([start, end]) => isCharInRange(char, start, end));
+}
+
 const BINDABLE_ELEMENTS = ['TEXTAREA', 'INPUT'];
 
 function bind(element = {}) {
@@ -403,15 +461,15 @@ function bind(element = {}) {
 			+ JSON.stringify(element)
 		);
 	}
-	const { resetData, resetDataOnKeypress, onInput } = makeOnInput();
+	const { resetDataOnClick, resetDataOnKeypress, onInput } = makeOnInput();
 	element.setAttribute('lang', 'ko');
 	element.setAttribute('autoCapitalize', 'none');
 	element.setAttribute('autoCorrect', 'off');
 	element.setAttribute('autoComplete', 'off');
 	element.setAttribute('spellCheck', 'false');
 	element.addEventListener('input', onInput);
-	element.addEventListener('click', resetData);
-	element.addEventListener('keydown', resetDataOnKeypress);
+	element.addEventListener('click', resetDataOnClick);
+	element.addEventListener('keyup', resetDataOnKeypress);
 }
 
 
