@@ -21,8 +21,13 @@
     border-radius: 7px 7px 0 0;
     padding: 0.5em;
   }
+
+  .context {
+    font-size: 0.25em;
+    text-shadow: none;
+  }
   
-  center {
+  center { /* Anki puts #typeans in a center element */
     display: flex;
     flex-direction: column;
   }
