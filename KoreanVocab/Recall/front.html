@@ -1,9 +1,15 @@
 <div class="drop-shadow">
     <div class="frontbg">
-        {{#Context Clues}}
-        <div class="context">{{Context Clues}}</div>
-        {{/Context Clues}}
-        {{English}}
+        <!-- If we have an image, use that instead of words to prompt for the answer. -->
+        {{#Image}}
+            {{Image}}
+        {{/Image}}
+        {{^Image}}
+            {{#Context Clues}}
+                <div class="context">{{Context Clues}}</div>
+            {{/Context Clues}}
+            {{English}}
+        {{/Image}}
     </div>
 
     {{type:Korean}}
