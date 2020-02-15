@@ -1,0 +1,45 @@
+@font-face { font-family: NanumGothic; src: url('_NanumGothic-Regular.ttf'); }
+
+.card {
+    font-family: NanumGothic, Arial;
+    font-size: 36px;
+    text-align: center;
+    color: black;
+    background: #f3f3f3;
+  }
+  
+  .drop-shadow {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 3px 3px 0 #e1e1e1;
+    border-radius: 7px 7px 10px 10px;
+  }
+  
+  .frontbg {
+    color: #fff;
+    text-shadow: 3px 3px 0 #169b99;
+    background-color: #18adab;
+    border-radius: 7px;
+    padding: 0.5em;
+  }
+
+  .back .frontbg {
+    border-radius: 7px 7px 0 0;
+  }
+  
+  .backbg {
+    background-color: #fff;
+    padding: 0.5em;
+    color: #016ea6;
+    border-radius: 0px 0px 10px 10px; 
+  }
+
+  #show-html {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: arial, sans-serif;
+    color: #adadad;
+    text-decoration: underline;
+    cursor: pointer;
+  }
