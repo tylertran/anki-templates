@@ -7,7 +7,7 @@ function checkAnswer() {
     let typeAns = document.getElementById('typeans');
 
     // Remove all dashes Anki inserted when calculating the diff.
-    // TODO: Doing this means that legitimate answers with dashes will be marked incorrect.
+    // TODO: Doing this means that legitimate dashes will be dropped from the inserted HTML.
     let userAns = typeAns.innerText.split('↓')[0].replace(/\-/g, '');
 
     let correctAnswers = document.getElementById('correct-ans').innerText.split(',').map(standardize);
@@ -21,7 +21,7 @@ function checkAnswer() {
 }
 
 function standardize(str) {
-    return str.trim().toUpperCase();
+    return str.trim().toUpperCase().replace(/\-/g, '');
 }
 
 checkAnswer();
