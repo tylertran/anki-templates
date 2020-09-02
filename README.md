@@ -6,6 +6,10 @@ These are Anki templates I use for studying Korean vocab and sentences. Both typ
 
 ### Recall
 
+![Vocab Recall Front](./doc/vocab_recall_front.png)
+
+![Vocab Recall Back](./doc/vocab_recall_back.png)
+
 ### Recognition
 
 ## Sentences
