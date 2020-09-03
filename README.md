@@ -4,6 +4,8 @@ These are Anki templates I use for studying Korean vocab and sentences. Both typ
 
 ## Vocab
 
+These cards are for studying vocabulary in a similar style to [WaniKani](https://www.wanikani.com/). 
+
 ### Recall
 
 ![Vocab Recall Front](./doc/vocab_recall_front.png)
