@@ -15,17 +15,17 @@
     border-radius: 7px 7px 10px 10px;
   }
 
-  .context {
-    font-size: 0.25em;
-    text-shadow: none;
-  }
-  
   .frontbg {
     color: #fff;
     text-shadow: 3px 3px 0 #169b99;
     background-color: #18adab;
     border-radius: 7px;
     padding: 0.5em;
+  }
+
+  .context {
+    font-size: 0.25em;
+    text-shadow: none;
   }
 
   .back .frontbg {
@@ -35,8 +35,30 @@
   .backbg {
     background-color: #fff;
     padding: 0.5em;
-    color: #016ea6;
+    color: #555;
     border-radius: 0px 0px 10px 10px; 
+  }
+
+  #info-box {
+    font-size: 16px;
+    line-height: 1.5em;
+    text-align: left;
+    padding: 0.5em;
+  }
+  
+  #info-box .section {
+    margin-bottom: 2.5em;
+  }
+  
+  #info-box h2 {
+      margin: 0 0 0.5em;
+      padding-bottom: 0.5em;
+      color: #888888;
+      font-size: 18px;
+      font-weight: normal;
+      letter-spacing: -1px;
+      line-height: 1em;
+      border-bottom: 1px solid #eee;
   }
 
   #show-html {
